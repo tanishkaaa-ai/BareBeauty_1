@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BareBeauty - Product Recommendations</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f6f9fc 0%, #f0f4f8 100%);
+            color: #333;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff6b81;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: #333;
+        }
+        
+        .page-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .page-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .page-header p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .option-cards {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+        
+        @media (max-width: 768px) {
+            .option-cards {
+                flex-direction: column;
+            }
+        }
+        
+        .option-card {
+            flex: 1;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+        
+        .option-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+        }
+        
+        .option-image {
+            height: 200px;
+            background-position: center;
+            background-size: cover;
+            position: relative;
+        }
+        
+        .skincare-image {
+            background-image: linear-gradient(rgba(255, 107, 129, 0.4), rgba(255, 107, 129, 0.4)), url('https://source.unsplash.com/random/?skincare');
+        }
+        
+        .makeup-image {
+            background-image: linear-gradient(rgba(166, 227, 233, 0.4), rgba(166, 227, 233, 0.4)), url('https://source.unsplash.com/random/?makeup');
+        }
+        
+        .option-content {
+            padding: 1.5rem;
+            text-align: center;
+        }
+        
+        .option-title {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .option-description {
+            color: #666;
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        
+        .option-btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 107, 129, 0.3);
+        }
+        
+        .option-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 107, 129, 0.4);
+        }
+        
+        .btn-icon {
+            margin-right: 0.5rem;
+        }
+        
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none;
+            color: #666;
+            font-weight: 600;
+            margin-top: 2rem;
+            transition: color 0.3s ease;
+        }
+        
+        .back-btn:hover {
+            color: #ff6b81;
+        }
+        
+        .back-icon {
+            margin-right: 0.5rem;
+        }
+
+        /* Home button styles */
+        .home-btn {
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            background-color: white;
+            color: #333;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .home-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+            color: #ff6b81;
+        }
+        
+        .home-icon {
+            margin-right: 0.5rem;
+        }
+        
+        /* Results section */
+        .results-section {
+            margin-top: 3rem;
+            display: none;
+        }
+        
+        .results-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: #333;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 0.5rem;
+        }
+        
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem;
+        }
+        
+        .spinner {
+            border: 4px solid rgba(255, 107, 129, 0.2);
+            border-left-color: #ff6b81;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        .recommendation-list {
+            list-style: none;
+        }
+        
+        .recommendation-item {
+            border-bottom: 1px solid #f0f4f8;
+            padding: 1.5rem 0;
+        }
+        
+        .recommendation-item:last-child {
+            border-bottom: none;
+        }
+        
+        .product-name {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-brand {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+        
+        .product-price {
+            color: #ff6b81;
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+        
+        .product-description {
+            margin-bottom: 0.8rem;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .why-recommended {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 0.95rem;
+            color: #666;
+            border-left: 4px solid #ff8fab;
+        }
+        
+        /* Product link styles */
+        .product-link {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 0.6rem 1.2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 0.9rem;
+            text-decoration: none;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 107, 129, 0.3);
+        }
+        
+        .product-link:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 107, 129, 0.4);
+        }
+        
+        /* Floating elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.2;
+            filter: blur(1px);
+            animation: float 15s infinite linear alternate;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(50px, 50px) rotate(10deg);
+            }
+        }
+        
+        .element-1 {
+            top: 10%;
+            left: 5%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+        
+        .element-2 {
+            top: 20%;
+            right: 10%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+        
+        .element-3 {
+            bottom: 15%;
+            left: 8%;
+            animation-duration: 18s;
+            animation-delay: 1s;
+        }
+
+        .option-image-container {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .option-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .option-card:hover .option-image {
+            transform: scale(1.05);
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating background elements -->
+
+    <div class="floating-elements">
+        <svg class="floating-element element-1" width="100" height="100" viewBox="0 0 100 100">
+            <path d="M50,10 a40,40 0 1,0 0,80 a40,40 0 1,0 0,-80" fill="#ff8fab" />
+        </svg>
+        
+        <svg class="floating-element element-2" width="120" height="120" viewBox="0 0 120 120">
+            <path d="M60 20 L100 60 L60 100 L20 60 Z" fill="#a6e3e9"/>
+        </svg>
+        
+        <svg class="floating-element element-3" width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="30" fill="#ffd384"/>
+        </svg>
+    </div>
+    
+    <div class="container">
+        <header>
+            <a href="basic.html" class="logo">Bare<span>Beauty</span></a>
+            <a href="basic.html" class="home-btn">
+                <i class="fas fa-home home-icon"></i>
+                Back to Home
+            </a>
+        </header>
+        
+        <div class="page-header">
+            <h1>Get Personalized Product Recommendations</h1>
+            <p>Based on your skin profile, we'll suggest the perfect products for your unique needs.</p>
+        </div>
+        
+        <div class="option-cards">
+            <!-- Skincare Option -->
+            <div class="option-card" id="skincare-option">
+                <div class="option-image-container">
+                    <img src="skincare.jpg" alt="Skincare Products" class="option-image">
+                </div>
+                <div class="option-content">
+                    <h2 class="option-title">Skincare Recommendations</h2>
+                    <p class="option-description">Discover the perfect skincare products to address your specific skin concerns and achieve your skincare goals.</p>
+                    <button class="option-btn" onclick="getRecommendations('skincare')">
+                        <i class="fas fa-flask btn-icon"></i>
+                        Get Skincare Products
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Makeup Option -->
+            <div class="option-card" id="makeup-option">
+                <div class="option-image-container">
+                    <img src="makeup.jpg" alt="Makeup Products" class="option-image">
+                </div>
+                <div class="option-content">
+                    <h2 class="option-title">Makeup Recommendations</h2>
+                    <p class="option-description">Find makeup products that complement your skin tone and help you achieve your preferred makeup look.</p>
+                    <button class="option-btn" onclick="getRecommendations('makeup')">
+                        <i class="fas fa-palette btn-icon"></i>
+                        Get Makeup Products
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results Section (initially hidden) -->
+        <div class="results-section" id="results-section">
+            <div class="results-card">
+                <h2 class="section-title" id="results-title">Your Personalized Recommendations</h2>
+                
+                <!-- Loading state -->
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p>Analyzing your skin profile and generating recommendations...</p>
+                </div>
+                
+                <!-- Results content -->
+                <div id="results-content" style="display: none;">
+                    <ul class="recommendation-list" id="recommendation-list">
+                        <!-- Results will be populated here -->
+                    </ul>
+                </div>
+            </div>
+
+            
+            <a href="#" class="back-btn" onclick="resetPage()">
+                <i class="fas fa-arrow-left back-icon"></i>
+                Back to Options
+            </a>
+        </div>
+    </div>
+
+    <!-- <button onclick="getRecommendations('skincare')">Get Skincare Recommendations</button>
+    <button onclick="getRecommendations('makeup')">Get Makeup Recommendations</button> -->
+
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get quiz results from local storage
+            const quizResults = JSON.parse(localStorage.getItem('bareBeautyQuizResults'));
+            
+            // Check if results exist, if not redirect to quiz page
+            if (!quizResults) {
+                alert('Please complete the skin quiz first!');
+                window.location.href = 'quiz.html';
+            }
+        });
+        
+        function getRecommendations(type) {
+            const quizResults = JSON.parse(localStorage.getItem('bareBeautyQuizResults'));
+
+            // Hide cards, show loader
+            document.querySelector('.option-cards').style.display = 'none';
+            document.getElementById('results-section').style.display = 'block';
+            document.getElementById('loading').style.display = 'flex';
+            document.getElementById('results-content').style.display = 'none';
+
+            document.getElementById('results-title').textContent =
+                type === 'skincare' ? 'Your Skincare Recommendations' : 'Your Makeup Recommendations';
+
+            fetch('http://127.0.0.1:5000/api/recommendations', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    quizResults: quizResults,
+                    type: type
+                }),
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received data:', data); // Add this line for debugging
+
+                if (!data.recommendations) {
+                    throw new Error("No recommendations in the response");
+                }
+
+                displayRecommendations(data.recommendations); // this is where forEach is used
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Sorry, we encountered an error generating your recommendations. Please try again.');
+                resetPage();
+            });
+        }
+
+
+        function preparePrompt(quizResults, type) {
+            // Create a prompt for Gemini API based on quiz results and recommendation type
+            let prompt = `Based on the following profile, recommend 5 ${type} products:\n`;
+            prompt += `- Skin Type: ${quizResults.skinType}\n`;
+            prompt += `- Skin Concerns: ${quizResults.skinConcerns.join(', ')}\n`;
+            prompt += `- Skin Tone: ${quizResults.skinTone}\n`;
+            
+            if (type === 'makeup') {
+                prompt += `- Makeup Style: ${quizResults.makeupProducts.join(', ')}\n`;
+            }
+            
+            // Convert budget code to readable text
+            let budgetText;
+            switch(quizResults.budget) {
+                case 'low': budgetText = 'Below ₹500'; break;
+                case 'mid': budgetText = '₹500 to ₹1500'; break;
+                case 'high': budgetText = '₹1500 to ₹5000'; break;
+                case 'luxury': budgetText = '₹5000+'; break;
+                default: budgetText = 'Not specified';
+            }
+            
+            prompt += `- Budget: ${budgetText}\n`;
+            
+            if (quizResults.preferredBrands && quizResults.preferredBrands.length > 0) {
+                prompt += `- Preferred Brands: ${quizResults.preferredBrands.join(', ')}\n`;
+            }
+            
+            prompt += `\nFor each product, provide:\n`;
+            prompt += `1. Product name\n`;
+            prompt += `2. Brand\n`;
+            prompt += `3. Price range\n`;
+            prompt += `4. Brief description\n`;
+            prompt += `5. Why it's specifically recommended for this user\n`;
+            prompt += `6. Product link (e-commerce site where it can be purchased)\n`;
+            
+            return prompt;
+        }
+    
+        
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('recommendation-list');
+            container.innerHTML = ''; // Clear old recommendations
+
+            recommendations.forEach((item, index) => {
+                const li = document.createElement('li');
+                li.classList.add('recommendation-item');
+                
+                // Build HTML content with product link
+                let productHTML = `
+                    <div class="product-name">${index + 1}. ${item.name}</div>
+                    <div class="product-brand"><strong>Brand:</strong> ${item.brand}</div>
+                    <div class="product-price"><strong>Price:</strong> ${item.price}</div>
+                    <div class="product-description">${item.description}</div>
+                    <div class="why-recommended"><strong>Why Recommended:</strong> ${item.whyRecommended}</div>
+                `;
+                
+                // Add product link if available
+                if (item.link) {
+                    productHTML += `<a href="${item.link}" target="_blank" class="product-link">
+                        <i class="fas fa-shopping-cart"></i> Shop Now
+                    </a>`;
+                } else {
+                    // Create a default link (you might want to use a search query instead)
+                    const searchQuery = encodeURIComponent(`${item.brand} ${item.name}`);
+                    productHTML += `<a href="https://www.google.com/search?q=${searchQuery}" target="_blank" class="product-link">
+                        <i class="fas fa-search"></i> Find Product
+                    </a>`;
+                }
+                
+                li.innerHTML = productHTML;
+                container.appendChild(li);
+            });
+
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('results-content').style.display = 'block';
+        }
+
+        
+        function resetPage() {
+            // Show option cards
+            document.querySelector('.option-cards').style.display = 'flex';
+            
+            // Hide results section
+            document.getElementById('results-section').style.display = 'none';
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+    </script>
+</body>
+</html>

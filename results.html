@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BareBeauty - Your Results</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f6f9fc 0%, #f0f4f8 100%);
+            color: #333;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff6b81;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: #333;
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        
+        .results-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .results-header p {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        .results-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: #333;
+            border-bottom: 2px solid #f0f4f8;
+            padding-bottom: 0.5rem;
+        }
+        
+        .result-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .result-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #666;
+        }
+        
+        .result-value {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            font-size: 1.1rem;
+            color: #333;
+            border-left: 4px solid #ff6b81;
+        }
+        
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .tag {
+            background: #fff0f3;
+            border: 1px solid #ff8fab;
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+            color: #ff6b81;
+            display: flex;
+            align-items: center;
+        }
+        
+        .tag i {
+            margin-right: 0.5rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .action-btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+        }
+        
+        .primary-btn {
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 107, 129, 0.3);
+        }
+        
+        .primary-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 107, 129, 0.4);
+        }
+        
+        .secondary-btn {
+            background-color: white;
+            color: #666;
+            border: 2px solid #e9ecef;
+        }
+        
+        .secondary-btn:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .btn-icon {
+            margin-right: 0.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .results-card {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Floating elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.2;
+            filter: blur(1px);
+            animation: float 15s infinite linear alternate;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(50px, 50px) rotate(10deg);
+            }
+        }
+        
+        .element-1 {
+            top: 10%;
+            left: 5%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+        
+        .element-2 {
+            top: 20%;
+            right: 10%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+        
+        .element-3 {
+            bottom: 15%;
+            left: 8%;
+            animation-duration: 18s;
+            animation-delay: 1s;
+        }
+        
+        /* Score summary */
+        .score-summary {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        
+        .score-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            width: 150px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin: 0 0.5rem;
+        }
+        
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .score-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .login-prompt {
+            text-align: center;
+            background-color: #fff0f3;
+            border-radius: 10px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid #ffccd5;
+        }
+        
+        .login-prompt h3 {
+            color: #ff6b81;
+            margin-bottom: 1rem;
+        }
+        
+        .login-prompt p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-elements">
+        <svg class="floating-element element-1" width="100" height="100" viewBox="0 0 100 100">
+            <path d="M50,10 a40,40 0 1,0 0,80 a40,40 0 1,0 0,-80" fill="#ff8fab" />
+        </svg>
+        
+        <svg class="floating-element element-2" width="120" height="120" viewBox="0 0 120 120">
+            <path d="M60 20 L100 60 L60 100 L20 60 Z" fill="#a6e3e9"/>
+        </svg>
+        
+        <svg class="floating-element element-3" width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="30" fill="#ffd384"/>
+        </svg>
+    </div>
+    
+    <div class="container">
+        <header>
+            <a href="quiz.html" class="logo">Skin<span>Smart</span></a>
+            <div>Your Personalized Results</div>
+        </header>
+        
+        <div class="results-header">
+            <h1>Your Personalized Skin Profile</h1>
+            <p>Based on your quiz answers, we've created a customized skin analysis just for you.</p>
+        </div>
+        
+        <!-- Login prompt (will be shown if user is not logged in) -->
+        <div id="login-prompt" class="login-prompt" style="display: none;">
+            <h3>Save Your Results</h3>
+            <p>Create an account or log in to save your skin profile and get personalized recommendations!</p>
+            <a href="login.html" class="action-btn primary-btn">
+                <i class="fas fa-user btn-icon"></i>
+                Login / Sign Up
+            </a>
+        </div>
+
+        <!-- Results Card -->
+        <div class="results-card">
+            <h2 class="section-title">Your Quiz Results</h2>
+            
+            <!-- Skin Type -->
+            <div class="result-item">
+                <div class="result-label">Skin Type</div>
+                <div class="result-value" id="skinType">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Skin Concerns -->
+            <div class="result-item">
+                <div class="result-label">Primary Skin Concerns</div>
+                <div class="tag-container" id="skinConcerns">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Skin Tone -->
+            <div class="result-item">
+                <div class="result-label">Skin Tone</div>
+                <div class="result-value" id="skinTone">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Makeup Style -->
+            <div class="result-item">
+                <div class="result-label">Makeup Style Preferences</div>
+                <div class="tag-container" id="makeupProducts">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Budget and Brands -->
+            <div class="result-item">
+                <div class="result-label">Budget & Brand Preferences</div>
+                <div class="result-value" id="budgetBrands">
+                    <!-- This will be filled by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <a href="recommendations.html" class="action-btn primary-btn" style="width: 100%; margin-bottom: 0.1rem;">
+                <i class="fas fa-shopping-bag btn-icon"></i>
+                Product Recommendations
+            </a>
+
+            <div style="display: flex; width: 70%; gap: 1rem;">
+                <a href="basic.html" class="action-btn primary-btn" style="flex: 1;">
+                    <i class="fas fa-home btn-icon"></i>
+                    Back to Homepage
+                </a>
+                <a href="quiz.html" class="action-btn secondary-btn" style="flex: 1;">
+                    <i class="fas fa-redo btn-icon"></i>
+                    Retake Quiz
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get quiz results from URL parameters or local storage
+            let quizResults = null;
+            
+            // First check URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('skinType')) {
+                quizResults = {};
+                for (const [key, value] of urlParams.entries()) {
+                    if (key === 'skinConcerns' || key === 'makeupProducts' || key === 'preferredBrands') {
+                        quizResults[key] = value.split(',');
+                    } else {
+                        quizResults[key] = value;
+                    }
+                }
+                // Save to localStorage for potential future use
+                localStorage.setItem('bareBeautyQuizResults', JSON.stringify(quizResults));
+            } else {
+                // Check localStorage
+                quizResults = JSON.parse(localStorage.getItem('bareBeautyQuizResults'));
+            }
+            
+            // If no results were found anywhere, use sample data
+            if (!quizResults) {
+                quizResults = {
+                    skinType: 'Combination',
+                    skinConcerns: ['Acne & Breakouts', 'Enlarged Pores', 'Dullness & Uneven Tone'],
+                    skinTone: 'Medium',
+                    makeupProducts: ['Natural', 'Dewy'],
+                    budget: 'mid',
+                    preferredBrands: ['L\'Oreal', 'Maybelline']
+                };
+            }
+            
+            // Display skin type
+            document.getElementById('skinType').textContent = quizResults.skinType || 'Not specified';
+            
+            // Display skin tone
+            document.getElementById('skinTone').textContent = quizResults.skinTone || 'Not specified';
+            
+            // Display skin concerns as tags
+            const skinConcernsContainer = document.getElementById('skinConcerns');
+            skinConcernsContainer.innerHTML = ''; // Clear container first
+            
+            if (quizResults.skinConcerns && quizResults.skinConcerns.length > 0) {
+                quizResults.skinConcerns.forEach(concern => {
+                    let icon;
+                    switch(concern) {
+                        case 'Acne & Breakouts':
+                            icon = 'bacteria';
+                            break;
+                        case 'Dark Spots & Hyperpigmentation':
+                            icon = 'sun';
+                            break;
+                        case 'Fine Lines & Wrinkles':
+                            icon = 'leaf';
+                            break;
+                        case 'Redness & Irritation':
+                            icon = 'fire';
+                            break;
+                        case 'Enlarged Pores':
+                            icon = 'expand';
+                            break;
+                        case 'Dullness & Uneven Tone':
+                            icon = 'cloud-sun';
+                            break;
+                        default:
+                            icon = 'check';
+                    }
+                    
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.innerHTML = `<i class="fas fa-${icon}"></i> ${concern}`;
+                    skinConcernsContainer.appendChild(tag);
+                });
+            } else {
+                skinConcernsContainer.textContent = 'No specific concerns selected';
+            }
+            
+            // Display makeup products as tags
+            const makeupProductsContainer = document.getElementById('makeupProducts');
+            makeupProductsContainer.innerHTML = ''; // Clear container first
+            
+            if (quizResults.makeupProducts && quizResults.makeupProducts.length > 0) {
+                quizResults.makeupProducts.forEach(product => {
+                    let icon;
+                    switch(product) {
+                        case 'Natural':
+                            icon = 'palette';
+                            break;
+                        case 'Dewy':
+                            icon = 'magic';
+                            break;
+                        case 'Soft Glam':
+                            icon = 'spray-can';
+                            break;
+                        case 'Glam':
+                            icon = 'paint-brush';
+                            break;
+                        case 'Not into makeup':
+                            icon = 'times';
+                            break;
+                        default:
+                            icon = 'check';
+                    }
+                    
+                    const tag = document.createElement('div');
+                    tag.className = 'tag';
+                    tag.innerHTML = `<i class="fas fa-${icon}"></i> ${product}`;
+                    makeupProductsContainer.appendChild(tag);
+                });
+            } else {
+                makeupProductsContainer.textContent = 'No makeup preferences selected';
+            }
+            
+            // Display budget and preferred brands
+            const budgetBrandsContainer = document.getElementById('budgetBrands');
+            
+            // Convert budget code to readable text
+            let budgetText;
+            switch(quizResults.budget) {
+                case 'low':
+                    budgetText = 'Below ₹500';
+                    break;
+                case 'mid':
+                    budgetText = '₹500 to ₹1500';
+                    break;
+                case 'high':
+                    budgetText = '₹1500 to ₹5000';
+                    break;
+                case 'luxury':
+                    budgetText = '₹5000+';
+                    break;
+                default:
+                    budgetText = 'Not specified';
+            }
+            
+            let brandsText = '';
+            if (quizResults.preferredBrands && quizResults.preferredBrands.length > 0) {
+                brandsText = quizResults.preferredBrands.join(', ');
+            } else {
+                brandsText = 'No specific brands selected';
+            }
+            
+            budgetBrandsContainer.innerHTML = `<strong>Budget:</strong> ${budgetText}<br><strong>Preferred Brands:</strong> ${brandsText}`;
+        });
+    </script>
+</body>
+</html>

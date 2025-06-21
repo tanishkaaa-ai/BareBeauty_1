@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BareBeauty - Personalized Skincare & Makeup</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f6f9fc 0%, #f0f4f8 100%);
+            color: #333;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 3rem;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6b81;
+        }
+        
+        .logo span {
+            color: #333;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 2rem;
+        }
+        
+        nav ul li a {
+            text-decoration: none;
+            color: #555;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        nav ul li a:hover {
+            color: #ff6b81;
+        }
+        
+        .hero {
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 2.5rem;
+            line-height: 1.6;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(255, 107, 129, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 107, 129, 0.4);
+        }
+        
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 5rem;
+        }
+        
+        .feature {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-10px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #ff6b81;
+        }
+        
+        .feature h3 {
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+        
+        .feature p {
+            color: #777;
+            line-height: 1.6;
+        }
+        
+        /* Floating elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.5;
+            filter: blur(1px);
+            animation: float 15s infinite linear alternate;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(50px, 50px) rotate(10deg);
+            }
+        }
+        
+        .element-1 {
+            top: 10%;
+            left: 5%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+        
+        .element-2 {
+            top: 20%;
+            right: 10%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+        
+        .element-3 {
+            bottom: 15%;
+            left: 8%;
+            animation-duration: 18s;
+            animation-delay: 1s;
+        }
+        
+        .element-4 {
+            bottom: 20%;
+            right: 15%;
+            animation-duration: 22s;
+            animation-delay: 3s;
+        }
+        
+        .element-5 {
+            top: 50%;
+            left: 25%;
+            animation-duration: 30s;
+            animation-delay: 5s;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 900px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .feature {
+                width: 100%;
+                max-width: 500px;
+            }
+            
+            nav ul {
+                display: none;
+            }
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-elements">
+        <svg class="floating-element element-1" width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="#ff8fab" opacity="0.2"/>
+        </svg>
+        
+        <svg class="floating-element element-2" width="120" height="120" viewBox="0 0 120 120">
+            <path d="M60 20 L100 60 L60 100 L20 60 Z" fill="#a6e3e9" opacity="0.3"/>
+        </svg>
+        
+        <svg class="floating-element element-3" width="80" height="80" viewBox="0 0 80 80">
+            <rect x="10" y="10" width="60" height="60" rx="15" fill="#ffd384" opacity="0.25"/>
+        </svg>
+        
+        <svg class="floating-element element-4" width="150" height="100" viewBox="0 0 150 100">
+            <path d="M25,50 a25,25 0 1,1 50,0 a25,25 0 1,1 -50,0 M100,50 a25,25 0 1,1 50,0 a25,25 0 1,1 -50,0" fill="#c5a3ff" opacity="0.2"/>
+        </svg>
+        
+        <svg class="floating-element element-5" width="90" height="90" viewBox="0 0 90 90">
+            <path d="M45,10 L80,45 L45,80 L10,45 Z" fill="#ffb6b9" opacity="0.15"/>
+        </svg>
+    </div>
+    
+    <div class="container">
+        <header>
+            <div class="logo">Bare<span>Beauty</span></div>
+            <nav>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Skincare</a></li>
+                    <li><a href="#">Makeup</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+        </header>
+        
+        <section class="hero">
+            <h1>Personalized Beauty Solutions</h1>
+            <p>Discover your perfect skincare routine and makeup products tailored specifically to your skin type, concerns, and complexion. Our advanced AI recommendations help you look and feel your best.</p>
+            <a href="quiz.html" class="cta-button">Take Skin Quiz</a>
+        </section>
+        
+        <section class="features">
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Custom Skincare</h3>
+                <p>Get a tailored skincare routine with product recommendations based on your unique skin needs.</p>
+            </div>
+            
+            <div class="feature">
+                <div class="feature-icon">
+                    <i class="fas fa-palette"></i>
+                </div>
+                <h3>Makeup Matcher</h3>
+                <p>Try on different makeup products virtually and find the perfect shades for your skin tone.</p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

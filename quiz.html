@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkinSmart - Skin Quiz</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f6f9fc 0%, #f0f4f8 100%);
+            color: #333;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #ff6b81;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: #333;
+        }
+        
+        .progress-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 20%;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+        
+        .quiz-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            display: none;
+        }
+        
+        .quiz-card.active {
+            display: block;
+        }
+        
+        .question {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .question h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        .question p {
+            color: #666;
+            font-size: 1.1rem;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        .option {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            border-color: #ff6b81;
+            transform: translateY(-5px);
+        }
+        
+        .option.selected {
+            background-color: #fff0f3;
+            border-color: #ff6b81;
+        }
+        
+        .option-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #ff6b81;
+        }
+        
+        .option h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .option p {
+            font-size: 0.9rem;
+            color: #777;
+        }
+        
+        .quiz-navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .quiz-btn {
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: none;
+            font-size: 1rem;
+        }
+        
+        .prev-btn {
+            background-color: #e9ecef;
+            color: #555;
+        }
+        
+        .prev-btn:hover {
+            background-color: #dee2e6;
+        }
+        
+        .next-btn {
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            color: white;
+            box-shadow: 0 4px 10px rgba(255, 107, 129, 0.3);
+        }
+        
+        .next-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 107, 129, 0.4);
+        }
+        
+        .image-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .image-option {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .image-option:hover, .image-option.selected {
+            border-color: #ff6b81;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .image-option img {
+            width: 100%;
+            height: 120px;
+            object-fit: cover;
+        }
+        
+        .image-option .option-label {
+            padding: 0.8rem;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .slider-question {
+            padding: 2rem 1rem;
+        }
+        
+        .slider-container {
+            margin: 2rem 0;
+        }
+        
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 5px;
+            background: #e0e0e0;
+            outline: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+        }
+        
+        .slider-label {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Budget and Brands styling */
+        .budget-brands-container {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .budget-select, .brands-select {
+            width: 100%;
+            padding: 0.8rem;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            color: #495057;
+        }
+        
+        .brands-select {
+            height: 150px;
+        }
+        
+        .select-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #495057;
+        }
+
+        /* Text area styles */
+        .textarea-container {
+            margin: 1.5rem 0;
+        }
+        
+        .textarea-container textarea {
+            width: 100%;
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            min-height: 100px;
+            font-size: 1rem;
+            color: #495057;
+            resize: vertical;
+        }
+        
+        
+        /* Floating elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.2;
+            filter: blur(1px);
+            animation: float 15s infinite linear alternate;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(50px, 50px) rotate(10deg);
+            }
+        }
+        
+        .element-1 {
+            top: 10%;
+            left: 5%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+        
+        .element-2 {
+            top: 20%;
+            right: 10%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+        
+        .element-3 {
+            bottom: 15%;
+            left: 8%;
+            animation-duration: 18s;
+            animation-delay: 1s;
+        }
+        
+        /* Results page styles */
+        .results-page {
+            display: none;
+            text-align: center;
+            padding: 3rem 0;
+        }
+        
+        .results-page.active {
+            display: block;
+        }
+        
+        .results-page h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .results-page p {
+            font-size: 1.2rem;
+            color: #666;
+            max-width: 800px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 107, 129, 0.3);
+            border-radius: 50%;
+            border-top-color: #ff6b81;
+            animation: spin 1s ease-in-out infinite;
+            margin: 2rem 0;
+        }
+        
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .options {
+                grid-template-columns: 1fr;
+            }
+            
+            .image-options {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .quiz-card {
+                padding: 1.5rem;
+            }
+            
+            .question h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- Floating background elements -->
+
+    <div class="floating-elements">
+        <svg class="floating-element element-1" width="100" height="100" viewBox="0 0 100 100">
+            <path d="M50,10 a40,40 0 1,0 0,80 a40,40 0 1,0 0,-80" fill="#ff8fab" />
+        </svg>
+        
+        <svg class="floating-element element-2" width="120" height="120" viewBox="0 0 120 120">
+            <path d="M60 20 L100 60 L60 100 L20 60 Z" fill="#a6e3e9"/>
+        </svg>
+        
+        <svg class="floating-element element-3" width="80" height="80" viewBox="0 0 80 80">
+            <circle cx="40" cy="40" r="30" fill="#ffd384"/>
+        </svg>
+    </div>
+    
+    <div class="container">
+        <header>
+            <a href="logo.png" class="logo">Bare<span>Beauty</span></a>
+            <div id="quiz-progress">Quiz 1/6</div>
+        </header>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progressBar"></div>
+        </div>
+        
+        <!-- Question 1 -->
+
+        <div class="quiz-card active" id="question1">
+            <div class="question">
+                <h2>What's your skin type?</h2>
+                <p>Select the option that best describes your skin most days</p>
+            </div>
+            
+            <div class="options">
+                <div class="option" onclick="selectOption(this, 'single', 'skinType')">
+                    <div class="option-icon">
+                        <i class="fas fa-tint"></i>
+                    </div>
+                    <h3>Oily</h3>
+                    <p>Shiny, especially in T-zone with enlarged pores</p>
+                </div>
+                
+                <div class="option" onclick="selectOption(this, 'single', 'skinType')">
+                    <div class="option-icon">
+                        <i class="fas fa-snowflake"></i>
+                    </div>
+                    <h3>Dry</h3>
+                    <p>Flaky, tight feeling with possible rough patches</p>
+                </div>
+                
+                <div class="option" onclick="selectOption(this, 'single', 'skinType')">
+                    <div class="option-icon">
+                        <i class="fas fa-balance-scale"></i>
+                    </div>
+                    <h3>Combination</h3>
+                    <p>Oily T-zone with dry cheeks and jawline</p>
+                </div>
+                
+                <div class="option" onclick="selectOption(this, 'single', 'skinType')">
+                    <div class="option-icon">
+                        <i class="fas fa-feather"></i>
+                    </div>
+                    <h3>Normal</h3>
+                    <p>Well-balanced, not too oily or dry</p>
+                </div>
+                
+                <div class="option" onclick="selectOption(this, 'single', 'skinType')">
+                    <div class="option-icon">
+                        <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                    <h3>Sensitive</h3>
+                    <p>Easily irritated, prone to redness and reaction</p>
+                </div>
+            </div>
+            
+            <div class="quiz-navigation">
+                <button class="quiz-btn prev-btn" onclick="prevQuestion()" disabled>Previous</button>
+                <button class="quiz-btn next-btn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+        
+        <!-- Question 2 -->
+        <div class="quiz-card" id="question2">
+            <div class="question">
+                <h2>What are your main skin concerns?</h2>
+                <p>Choose up to 3 options that you'd like to address</p>
+            </div>
+            
+            <div class="image-options">
+                <div class="image-option" onclick="selectOption(this, 'multi', 'skinConcerns')">
+                    <img src="acne.jpg" alt="Acne & Breakouts">
+                    <div class="option-label">Acne & Breakouts</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'skinConcerns')">
+                    <img src="dark_spots.jpg" alt="Dark Spots & Hyperpigmentation">
+                    <div class="option-label">Dark Spots & Hyperpigmentation</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'skinConcerns')">
+                    <img src="fine_lines.jpg" alt="Fine Lines & Wrinkles">
+                    <div class="option-label">Fine Lines & Wrinkles</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'skinConcerns')">
+                    <img src="redness.jpg" alt="Redness & Irritation">
+                    <div class="option-label">Redness & Irritation</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'skinConcerns')">
+                    <img src="enlarged_pores.jpg" alt="Enlarged Pores">
+                    <div class="option-label">Enlarged Pores</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'skinConcerns')">
+                    <img src="dullness.jpg" alt="Dullness & Uneven Tone">
+                    <div class="option-label">Dullness & Uneven Tone</div>
+                </div>
+            </div>
+            
+            <div class="quiz-navigation">
+                <button class="quiz-btn prev-btn" onclick="prevQuestion()">Previous</button>
+                <button class="quiz-btn next-btn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+        
+        <!-- Question 3 -->
+        <div class="quiz-card" id="question3">
+            <div class="question">
+                <h2>Choose your skin tone</h2>
+                <p>Select the option that best matches your natural skin tone</p>
+            </div>
+            
+            <div class="image-options">
+                <div class="image-option" onclick="selectOption(this, 'single', 'skinTone')">
+                    <img src="fair_skin.jpg" alt="Fair skin tone">
+                    <div class="option-label">Fair</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'single', 'skinTone')">
+                    <img src="medium_skin.jpg" alt="Medium skin tone">
+                    <div class="option-label">Medium</div>
+                </div>
+
+                <div class="image-option" onclick="selectOption(this, 'single', 'skinTone')">
+                    <img src="dusky_skin.jpg" alt="Dusky skin tone">
+                    <div class="option-label">Dusky</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'single', 'skinTone')">
+                    <img src="deep_skin.jpg" alt="Deep skin tone">
+                    <div class="option-label">Deep</div>
+                </div>
+            </div>
+            
+            <div class="quiz-navigation">
+                <button class="quiz-btn prev-btn" onclick="prevQuestion()">Previous</button>
+                <button class="quiz-btn next-btn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+
+        <!-- Question 5 -->
+        <div class="quiz-card" id="question4">
+            <div class="question">
+                <h2>What kind of make up you are into?</h2>
+                <p>Select all that apply to your typical makeup routine</p>
+            </div>
+            
+            <div class="image-options">
+                <div class="image-option" onclick="selectOption(this, 'multi', 'makeupProducts')">
+                    <img src="natural.jpg" alt="Natural makeup look">
+                    <div class="option-label">Natural</div>
+
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'makeupProducts')">
+                    <img src="dewy.jpg" alt="Dewy makeup look">
+                    <div class="option-label">Dewy</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'makeupProducts')">
+                    <img src="soft_glam.jpg" alt="Soft Glam makeup look">
+                    <div class="option-label">Soft Glam</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'makeupProducts')">
+                    <img src="glam.jpg" alt="Glam makeup look">
+                    <div class="option-label">Glam</div>
+                </div>
+                
+                <div class="image-option" onclick="selectOption(this, 'multi', 'makeupProducts')">
+                    <img src="no_makeup.jpg" alt="No makeup">
+                    <div class="option-label">Not into makeup</div>
+                </div>
+            </div>
+            
+            <div class="quiz-navigation">
+                <button class="quiz-btn prev-btn" onclick="prevQuestion()">Previous</button>
+                <button class="quiz-btn next-btn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+        
+        <!-- Question 6: Budget and Brands -->
+        <div class="quiz-card" id="question5">
+            <div class="question">
+                <h2>Your Budget & Preferred Brands</h2>
+                <p>Tell us about your budget and brand preferences</p>
+            </div>
+            
+            <div class="budget-brands-container">
+                <div class="budget-section">
+                    <label for="budget" class="select-label">How much do you want to invest in your skincare/makeup per month?</label>
+                    <select id="budget" name="budget" class="budget-select" onchange="updateBrands()">
+                        <option value="">Select your budget</option>
+                        <option value="low">Below ₹500</option>
+                        <option value="mid">₹500 to ₹1500</option>
+                        <option value="high">₹1500 to ₹5000</option>
+                        <option value="luxury">₹5000+</option>
+                    </select>
+                </div>
+                
+                <div class="brands-section" style="margin-top: 1.5rem;">
+                    <label for="preferredBrands" class="select-label">Choose your preferred brands (hold Ctrl/Cmd to select multiple):</label>
+                    <select id="preferredBrands" name="preferredBrands" class="brands-select" multiple>
+                        <!-- Options will be populated by JavaScript -->
+                        <option value="" disabled>Please select a budget first</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="quiz-navigation">
+                <button class="quiz-btn prev-btn" onclick="prevQuestion()">Previous</button>
+                <button class="quiz-btn next-btn" onclick="nextQuestion()">Next</button>
+            </div>
+        </div>
+    
+        <div class="quiz-card" id="question6">
+            <div class="question">
+                <h2>Almost done! Any additional information?</h2>
+                <p>Tell us anything else we should know for better recommendations</p>
+            </div>
+                
+            <div class="textarea-container">
+                <textarea id="additional-info" placeholder="E.g., specific concerns, previous experiences with skincare products, medications that affect your skin, etc." onchange="updateAdditionalInfo()"></textarea>
+            </div>
+            
+            <div class="quiz-navigation">
+                <button class="quiz-btn prev-btn" onclick="prevQuestion()">Previous</button>
+                <button class="quiz-btn next-btn" onclick="finishQuiz()">Finish Quiz</button>
+            </div>
+            
+        </div>
+        
+        <!-- Results Page (Hidden initially) -->
+        <div class="results-page" id="resultsPage">
+            <h1>Analyzing Your Results</h1>
+            <p>We're processing your answers to create your personalized skincare and makeup recommendations.</p>
+            
+            <div class="loading-spinner"></div>
+            
+            <p>This will just take a moment...</p>
+        </div>
+    </div>
+    
+    <script>
+        // Current question tracker
+        let currentQuestion = 1;
+        const totalQuestions = 6;
+
+        // Quiz results object to store answers
+        const quizResults = {
+            skinType: '',
+            skinConcerns: [],
+            skinTone: '',
+            makeupProducts: [],
+            budget: '',
+            preferredBrands: [],
+            additionalInfo: ''
+        };
+
+        // Brand options based on budget
+        const brands = {
+            low: {
+                skincare: ['Himalaya', 'Ponds', 'Biotique', 'Minimalist'],
+                makeup: ['Blue Heaven', 'Elle 18', 'Miss Claire', 'Wet n Wild']
+            },
+            mid: {
+                skincare: ['L\'Oreal', 'Neutrogena', 'Plum', 'The Ordinary'],
+                makeup: ['Maybelline', 'Lakme', 'Colorbar', 'NYX']
+            },
+            high: {
+                skincare: ['Clinique', 'Kiehl\'s', 'Forest Essentials', 'Murad'],
+                makeup: ['MAC', 'Smashbox', 'Benefit Cosmetics', 'Too Faced']
+            },
+            luxury: {
+                skincare: ['Estée Lauder', 'La Mer', 'SK-II', 'Chanel'],
+                makeup: ['Dior', 'Bobbi Brown', 'Charlotte Tilbury', 'YSL Beauty']
+            }
+        };
+
+        // Function to handle option selection
+        function selectOption(element, selectionType, questionType) {
+            if (selectionType === 'single') {
+                // For single selection, deselect all others first
+                let options = element.parentElement.querySelectorAll('.option, .image-option');
+                options.forEach(opt => opt.classList.remove('selected'));
+                element.classList.add('selected');
+                
+                // Save selection based on question type
+                if (questionType === 'skinType') {
+                    quizResults.skinType = element.querySelector('h3').innerText;
+                } else if (questionType === 'skinTone') {
+                    quizResults.skinTone = element.querySelector('.option-label').innerText;
+                }
+            } else if (selectionType === 'multi') {
+                // For multi-selection
+                if (element.classList.contains('selected')) {
+                    element.classList.remove('selected');
+                    
+                    // Remove from results array
+                    if (questionType === 'skinConcerns') {
+                        const concern = element.querySelector('.option-label').innerText;
+                        quizResults.skinConcerns = quizResults.skinConcerns.filter(item => item !== concern);
+                    } else if (questionType === 'makeupProducts') {
+                        const product = element.querySelector('.option-label').innerText;
+                        quizResults.makeupProducts = quizResults.makeupProducts.filter(item => item !== product);
+                    }
+                } else {
+                    // Handle "Not into makeup" special case
+                    if (questionType === 'makeupProducts') {
+                        const optionText = element.querySelector('.option-label').innerText;
+                        
+                        if (optionText === "Not into makeup") {
+                            // If selecting "Not into makeup", deselect all other options
+                            let options = element.parentElement.querySelectorAll('.image-option');
+                            options.forEach(opt => {
+                                if (opt !== element) {
+                                    opt.classList.remove('selected');
+                                    const text = opt.querySelector('.option-label').innerText;
+                                    quizResults.makeupProducts = quizResults.makeupProducts.filter(item => item !== text);
+                                }
+                            });
+                        } else {
+                            // If selecting another option but "Not into makeup" was selected
+                            const noMakeupOption = Array.from(element.parentElement.querySelectorAll('.image-option'))
+                                .find(opt => opt.querySelector('.option-label').innerText === "Not into makeup");
+                            
+                            if (noMakeupOption && noMakeupOption.classList.contains('selected')) {
+                                noMakeupOption.classList.remove('selected');
+                                quizResults.makeupProducts = quizResults.makeupProducts.filter(item => item !== "Not into makeup");
+                            }
+                        }
+                    }
+                    
+                    element.classList.add('selected');
+                    
+                    // Add to results array
+                    if (questionType === 'skinConcerns') {
+                        const concern = element.querySelector('.option-label').innerText;
+                        if (!quizResults.skinConcerns.includes(concern)) {
+                            // Limit to 3 concerns max
+                            if (quizResults.skinConcerns.length < 3) {
+                                quizResults.skinConcerns.push(concern);
+                            } else {
+                                alert('Please select up to 3 concerns only.');
+                                element.classList.remove('selected');
+                            }
+                        }
+                    } else if (questionType === 'makeupProducts') {
+                        const product = element.querySelector('.option-label').innerText;
+                        if (!quizResults.makeupProducts.includes(product)) {
+                            quizResults.makeupProducts.push(product);
+                        }
+                    }
+                }
+            }
+        }
+
+        function testFunction() {
+            alert("Button clicked!");
+        }
+
+        // Function to update routine time from slider
+        function updateRoutineTime() {
+            const slider = document.getElementById('timeSlider');
+            quizResults.routineTime = parseInt(slider.value);
+        }
+
+        // Function to populate brand options based on budget
+        function updateBrands() {
+            const budgetSelect = document.getElementById('budget');
+            const brandsSelect = document.getElementById('preferredBrands');
+            const selectedBudget = budgetSelect.value;
+            
+            // Clear existing options
+            while (brandsSelect.firstChild) {
+                brandsSelect.removeChild(brandsSelect.firstChild);
+            }
+            
+            // Update quiz results
+            quizResults.budget = selectedBudget;
+            quizResults.preferredBrands = [];
+            
+            // Add new options based on selected budget
+            if (selectedBudget) {
+                // Add skincare brands
+                const skincareGroup = document.createElement('optgroup');
+                skincareGroup.label = 'Skincare';
+                brands[selectedBudget].skincare.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand;
+                    option.textContent = brand;
+                    skincareGroup.appendChild(option);
+                });
+                brandsSelect.appendChild(skincareGroup);
+                
+                // Add makeup brands
+                const makeupGroup = document.createElement('optgroup');
+                makeupGroup.label = 'Makeup';
+                brands[selectedBudget].makeup.forEach(brand => {
+                    const option = document.createElement('option');
+                    option.value = brand;
+                    option.textContent = brand;
+                    makeupGroup.appendChild(option);
+                });
+                brandsSelect.appendChild(makeupGroup);
+            } else {
+                // If no budget selected, add a placeholder
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Please select a budget first';
+                option.disabled = true;
+                brandsSelect.appendChild(option);
+            }
+        }
+
+        // Function to navigate to next question
+        function nextQuestion() {
+            // Validate current question
+            if (!validateQuestion(currentQuestion)) {
+                return;
+            }
+            
+            // If validation passed, move to next question
+            document.getElementById(`question${currentQuestion}`).classList.remove('active');
+            currentQuestion++;
+            document.getElementById(`question${currentQuestion}`).classList.add('active');
+            
+            // Update progress bar and text
+            updateProgress();
+        }
+
+        // Function to navigate to previous question
+        function prevQuestion() {
+            document.getElementById(`question${currentQuestion}`).classList.remove('active');
+            currentQuestion--;
+            document.getElementById(`question${currentQuestion}`).classList.add('active');
+            
+            // Update progress bar and text
+            updateProgress();
+        }
+
+        // Function to update progress bar and text
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const progressText = document.getElementById('quiz-progress');
+            
+            const progress = (currentQuestion / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.innerText = `Quiz ${currentQuestion}/${totalQuestions}`;
+            
+            // Enable/disable previous button based on current question
+            const prevBtn = document.querySelector('.prev-btn');
+            prevBtn.disabled = currentQuestion === 1;
+        }
+
+        // Function to validate answers before proceeding
+        function validateQuestion(questionNum) {
+            switch (questionNum) {
+                case 1:
+                    if (!quizResults.skinType) {
+                        alert('Please select your skin type');
+                        return false;
+                    }
+                    break;
+                case 2:
+                    if (quizResults.skinConcerns.length === 0) {
+                        alert('Please select at least one skin concern');
+                        return false;
+                    }
+                    break;
+                case 3:
+                    if (!quizResults.skinTone) {
+                        alert('Please select your skin tone');
+                        return false;
+                    }
+                    break;
+                case 4:
+                    if (quizResults.makeupProducts.length === 0) {
+                        alert('Please select at least one makeup product or "I Don\'t Use Makeup"');
+                        return false;
+                    }
+                    break;
+                case 5:
+                    if (!quizResults.budget) {
+                        alert('Please select your budget');
+                        return false;
+                    }
+                    // Get selected brands
+                    const brandsSelect = document.getElementById('preferredBrands');
+                    const selectedBrands = Array.from(brandsSelect.selectedOptions).map(option => option.value);
+                    if (selectedBrands.length === 0) {
+                        alert('Please select at least one preferred brand');
+                        return false;
+                    }
+                    quizResults.preferredBrands = selectedBrands;
+                    break;
+            }
+            return true;
+        }
+
+        function updateAdditionalInfo() {
+            quizResults.additionalInfo = document.getElementById('additional-info').value;
+        }
+
+        // Function to finish quiz and show results
+        // Function to finish quiz and show results
+        function finishQuiz() {
+            // Validate final question
+            if (!validateQuestion(currentQuestion)) {
+                return;
+            }
+            
+            // Hide current question
+            document.getElementById(`question${currentQuestion}`).classList.remove('active');
+            
+            // Show results page
+            document.getElementById('resultsPage').classList.add('active');
+            
+            // Save quiz results to localStorage
+            localStorage.setItem('bareBeautyQuizResults', JSON.stringify(quizResults));
+            
+            // Simulate processing (in a real app, this would be an API call)
+            setTimeout(() => {
+                // Redirect to results page with query parameters
+                const queryParams = new URLSearchParams();
+                
+                // Add single values
+                queryParams.append('skinType', quizResults.skinType);
+                queryParams.append('skinTone', quizResults.skinTone);
+                queryParams.append('budget', quizResults.budget);
+                
+                // Add array values
+                if (quizResults.skinConcerns.length > 0) {
+                    queryParams.append('skinConcerns', quizResults.skinConcerns.join(','));
+                }
+                if (quizResults.makeupProducts.length > 0) {
+                    queryParams.append('makeupProducts', quizResults.makeupProducts.join(','));
+                }
+                if (quizResults.preferredBrands.length > 0) {
+                    queryParams.append('preferredBrands', quizResults.preferredBrands.join(','));
+                }
+                
+                // Redirect to results page
+                window.location.href = 'results.html?' + queryParams.toString();
+            }, 3000);
+        }
+
+        // Initialize event listeners when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set initial progress
+            updateProgress();
+            
+            // Set up change event for brand selection
+            document.getElementById('preferredBrands').addEventListener('change', function() {
+                quizResults.preferredBrands = Array.from(this.selectedOptions).map(option => option.value);
+            });
+        });
+    </script>
+</body> 

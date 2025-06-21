@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>bareBeauty - Login / Sign Up</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f6f9fc 0%, #f0f4f8 100%);
+            color: #333;
+            position: relative;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #ff6b81;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo span {
+            color: #333;
+        }
+        
+        .forms-container {
+            display: flex;
+            width: 100%;
+            max-width: 900px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            min-height: 500px;
+        }
+        
+        .image-side {
+            flex: 1;
+            background: linear-gradient(135deg, #ff8fab 0%, #ff6b81 100%);
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+        }
+        
+        .image-side h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .image-side p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+        
+        .form-side {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .tabs {
+            display: flex;
+            margin-bottom: 2rem;
+        }
+        
+        .tab {
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            background: transparent;
+            border: none;
+            color: #888;
+            position: relative;
+        }
+        
+        .tab.active {
+            color: #ff6b81;
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ff6b81, #ff8fab);
+            border-radius: 3px;
+        }
+        
+        .form-content {
+            display: none;
+        }
+        
+        .form-content.active {
+            display: block;
+        }
+        
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #ff6b81;
+        }
+        
+        .forgot-password {
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+        
+        .forgot-password a {
+            color: #666;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .forgot-password a:hover {
+            color: #ff6b81;
+        }
+        
+        .submit-btn {
+            background: linear-gradient(45deg, #ff6b81, #ff8fab);
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(255, 107, 129, 0.3);
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+            margin-bottom: 1.5rem;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(255, 107, 129, 0.4);
+        }
+        
+        .social-login {
+            margin-top: 1rem;
+            text-align: center;
+        }
+        
+        .social-login p {
+            color: #888;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+        
+        .social-login p::before,
+        .social-login p::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background-color: #ddd;
+        }
+        
+        .social-login p::before {
+            left: 0;
+        }
+        
+        .social-login p::after {
+            right: 0;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-3px);
+        }
+        
+        .social-icon i {
+            font-size: 1.2rem;
+            color: #666;
+        }
+        
+        /* Floating elements */
+        .floating-elements {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+        
+        .floating-element {
+            position: absolute;
+            opacity: 0.5;
+            filter: blur(1px);
+            animation: float 15s infinite linear alternate;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            100% {
+                transform: translate(50px, 50px) rotate(10deg);
+            }
+        }
+        
+        .element-1 {
+            top: 10%;
+            left: 5%;
+            animation-duration: 20s;
+            animation-delay: 0s;
+        }
+        
+        .element-2 {
+            top: 20%;
+            right: 10%;
+            animation-duration: 25s;
+            animation-delay: 2s;
+        }
+        
+        .element-3 {
+            bottom: 15%;
+            left: 8%;
+            animation-duration: 18s;
+            animation-delay: 1s;
+        }
+        
+        .element-4 {
+            bottom: 20%;
+            right: 15%;
+            animation-duration: 22s;
+            animation-delay: 3s;
+        }
+        
+        .element-5 {
+            top: 50%;
+            left: 25%;
+            animation-duration: 30s;
+            animation-delay: 5s;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 900px) {
+            .forms-container {
+                flex-direction: column;
+                max-width: 500px;
+            }
+            
+            .image-side {
+                padding: 2rem 1rem;
+            }
+            
+            .form-side {
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Floating background elements -->
+    <div class="floating-elements">
+        <svg class="floating-element element-1" width="100" height="100" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="#ff8fab" opacity="0.2"/>
+        </svg>
+        
+        <svg class="floating-element element-2" width="120" height="120" viewBox="0 0 120 120">
+            <path d="M60 20 L100 60 L60 100 L20 60 Z" fill="#a6e3e9" opacity="0.3"/>
+        </svg>
+        
+        <svg class="floating-element element-3" width="80" height="80" viewBox="0 0 80 80">
+            <rect x="10" y="10" width="60" height="60" rx="15" fill="#ffd384" opacity="0.25"/>
+        </svg>
+        
+        <svg class="floating-element element-4" width="150" height="100" viewBox="0 0 150 100">
+            <path d="M25,50 a25,25 0 1,1 50,0 a25,25 0 1,1 -50,0 M100,50 a25,25 0 1,1 50,0 a25,25 0 1,1 -50,0" fill="#c5a3ff" opacity="0.2"/>
+        </svg>
+        
+        <svg class="floating-element element-5" width="90" height="90" viewBox="0 0 90 90">
+            <path d="M45,10 L80,45 L45,80 L10,45 Z" fill="#ffb6b9" opacity="0.15"/>
+        </svg>
+    </div>
+    
+    <div class="container">
+        <div class="logo">Bare<span>Beauty</span></div>
+        
+        <div class="forms-container">
+            <div class="image-side">
+                <h2>Welcome to BareBeauty</h2>
+                <p>Discover your perfect skincare routine and makeup products tailored specifically to your skin type, concerns, and complexion.</p>
+                <img src="logo.png" alt="Skincare Illustration" style="max-width: 80%; border-radius: 15px; margin-top: 1rem;">
+            </div>
+            <div class="form-side">
+                <div class="tabs">
+                    <button class="tab active" onclick="showTab('login')">Log In</button>
+                    <button class="tab" onclick="showTab('signup')">Sign Up</button>
+                </div>
+                
+                <div id="login" class="form-content active">
+                    <form action="basic.html">
+                        <div class="input-group">
+                            <label for="login-email">Email</label>
+                            <input type="email" id="login-email" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="login-password">Password</label>
+                            <input type="password" id="login-password" required>
+                        </div>
+                        <div class="forgot-password">
+                            <a href="#">Forgot password?</a>
+                        </div>
+                        <button type="submit" class="submit-btn">Log In</button>
+                    </form>
+                    
+                    <div class="social-login">
+                        <p>Or log in with</p>
+                        <div class="social-icons">
+                            <div class="social-icon">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="social-icon">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div class="social-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="signup" class="form-content">
+                    <form action="basic.html">
+                        <div class="input-group">
+                            <label for="signup-name">Full Name</label>
+                            <input type="text" id="signup-name" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="signup-email">Email</label>
+                            <input type="email" id="signup-email" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="signup-password">Password</label>
+                            <input type="password" id="signup-password" required>
+                        </div>
+                        <div class="input-group">
+                            <label for="signup-confirm">Confirm Password</label>
+                            <input type="password" id="signup-confirm" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Create Account</button>
+                    </form>
+                    
+                    <div class="social-login">
+                        <p>Or sign up with</p>
+                        <div class="social-icons">
+                            <div class="social-icon">
+                                <i class="fab fa-google"></i>
+                            </div>
+                            <div class="social-icon">
+                                <i class="fab fa-facebook-f"></i>
+                            </div>
+                            <div class="social-icon">
+                                <i class="fab fa-apple"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="user_data_storage.js" type="module"></script>
+
+    <script>
+        function showTab(tabId) {
+            // Hide all form contents
+            document.querySelectorAll('.form-content').forEach(content => {
+                content.classList.remove('active');
+            });
+    
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+    
+            // Show the selected form content
+            document.getElementById(tabId).classList.add('active');
+    
+            // Set the clicked tab as active
+            const clickedTab = Array.from(document.querySelectorAll('.tab')).find(tab => {
+                return tab.textContent.toLowerCase().includes(tabId);
+            });
+    
+            if (clickedTab) {
+                clickedTab.classList.add('active');
+            }
+        }
+    
+        document.addEventListener('DOMContentLoaded', function () {
+            // Login form submission handler
+            document.getElementById('login').querySelector('form').addEventListener('submit', function (e) {
+                e.preventDefault();
+    
+                const email = document.getElementById('login-email').value;
+                const password = document.getElementById('login-password').value;
+    
+                userDataStorage.setCurrentUser(email);
+    
+                const tempQuizResults = JSON.parse(localStorage.getItem('bareBeautyQuizResults'));
+                if (tempQuizResults) {
+                    userDataStorage.storeUserQuizResults(email, tempQuizResults);
+                }
+    
+                const referrer = document.referrer;
+                if (referrer.includes('quiz.html') || referrer.includes('results.html')) {
+                    window.location.href = 'results.html';
+                } else {
+                    window.location.href = 'basic.html';
+                }
+            });
+    
+            // Signup form submission handler
+            document.getElementById('signup').querySelector('form').addEventListener('submit', function (e) {
+                e.preventDefault();
+    
+                const name = document.getElementById('signup-name').value;
+                const email = document.getElementById('signup-email').value;
+                const password = document.getElementById('signup-password').value;
+    
+                userDataStorage.setCurrentUser(email);
+    
+                const tempQuizResults = JSON.parse(localStorage.getItem('bareBeautyQuizResults'));
+                if (tempQuizResults) {
+                    userDataStorage.storeUserQuizResults(email, tempQuizResults);
+                }
+    
+                const referrer = document.referrer;
+                if (referrer.includes('quiz.html') || referrer.includes('results.html')) {
+                    window.location.href = 'results.html';
+                } else {
+                    window.location.href = 'basic.html';
+                }
+            });
+        });
+    </script>
+    
+</body>
+</html>
