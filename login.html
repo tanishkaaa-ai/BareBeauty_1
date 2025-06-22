@@ -412,6 +412,7 @@
             style="max-width: 80%; border-radius: 15px; margin-top: 1rem"
           />
         </div>
+
         <div class="form-side">
           <div class="tabs">
             <button class="tab active" onclick="showTab('login')">
@@ -492,8 +493,6 @@
       </div>
     </div>
 
-    <script src="user_data_storage.js" type="module"></script>
-
     <script>
       function showTab(tabId) {
         // Hide all form contents
@@ -532,47 +531,17 @@
             const email = document.getElementById("login-email").value;
             const password = document.getElementById("login-password").value;
 
-            // Call backend for JWT login
-            try {
-              const response = await fetch("http://localhost:5000/api/login", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ email, password }),
-              });
-              if (response.ok) {
-                const data = await response.json();
-                // Store JWT token in localStorage
-                localStorage.setItem("access_token", data.access_token);
-                // Optionally also store user info
-                localStorage.setItem(
-                  "bareBeautyUser",
-                  JSON.stringify(data.user)
-                );
-                userDataStorage.setCurrentUser(email);
-
-                const tempQuizResults = JSON.parse(
-                  localStorage.getItem("bareBeautyQuizResults")
-                );
-                if (tempQuizResults) {
-                  userDataStorage.storeUserQuizResults(email, tempQuizResults);
-                }
-
-                const referrer = document.referrer;
-                if (
-                  referrer.includes("quiz.html") ||
-                  referrer.includes("results.html")
-                ) {
-                  window.location.href = "results.html";
-                } else {
-                  window.location.href = "basic.html";
-                }
-              } else {
-                const err = await response.json();
-                alert("Login failed: " + (err.error || "Unknown error"));
-              }
-            } catch (err) {
-              alert("Network error during login.");
+            // Basic form validation
+            if (!email || !password) {
+              alert("Please fill in all fields");
+              return;
             }
+
+            // You can add your login logic here
+            console.log("Login attempt:", { email, password });
+
+            // For now, just redirect to basic.html
+            window.location.href = "basic.html";
           });
 
         // Signup form submission handler
@@ -585,35 +554,28 @@
             const name = document.getElementById("signup-name").value;
             const email = document.getElementById("signup-email").value;
             const password = document.getElementById("signup-password").value;
+            const confirmPassword =
+              document.getElementById("signup-confirm").value;
 
-            try {
-              const response = await fetch("http://localhost:5000/api/signup", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ name, email, password }),
-              });
-              if (response.ok) {
-                alert("Signup successful. Please log in.");
-                showTab("login");
-              } else {
-                const err = await response.json();
-                alert("Signup failed: " + (err.error || "Unknown error"));
-              }
-            } catch (err) {
-              alert("Network error during signup.");
+            // Basic form validation
+            if (!name || !email || !password || !confirmPassword) {
+              alert("Please fill in all fields");
+              return;
             }
+
+            if (password !== confirmPassword) {
+              alert("Passwords do not match");
+              return;
+            }
+
+            // You can add your signup logic here
+            console.log("Signup attempt:", { name, email, password });
+
+            // For now, show success message and switch to login
+            alert("Account created successfully! Please log in.");
+            showTab("login");
           });
       });
-
-      // Utility: for any protected API call, use this function
-      async function jwtFetch(url, options = {}) {
-        const token = localStorage.getItem("access_token");
-        options.headers = options.headers || {};
-        if (token) {
-          options.headers["Authorization"] = "Bearer " + token;
-        }
-        return fetch(url, options);
-      }
     </script>
   </body>
 </html>
