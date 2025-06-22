@@ -1,6 +1,6 @@
 // user-data-storage.js - Handles storing and retrieving quiz results
 
-class UserDataStorage {
+  class UserDataStorage {
     constructor() {
       // Initialize storage if it doesn't exist yet
       if (!localStorage.getItem('bareBeautyUserData')) {
@@ -145,7 +145,7 @@ class UserDataStorage {
         return null;
       }
     }
-}
+  }
   
 // Create a global instance for easy access
 const userDataStorage = new UserDataStorage();
